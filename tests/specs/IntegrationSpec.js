@@ -8,32 +8,32 @@ describe('Integration', function(){
     story.allowExternalFunctionFallbacks = true;
   });
   
-  it('should load a file', function(){
+  xit('should load a file', function(){
     expect(story.canContinue).toBe(true);
   });
   
-  it ('should jump to a knot', function() {
+  xit('should jump to a knot', function() {
     story.ChoosePathString('knot');
     expect(story.canContinue).toBe(true);
     
     expect(story.Continue()).toEqual('Knot content\n');
   });
   
-  it ('should jump to a stitch', function() {
+  xit('should jump to a stitch', function() {
     story.ChoosePathString('knot.stitch');
     expect(story.canContinue).toBe(true);
     
     expect(story.Continue()).toEqual('Stitch content\n');
   });
   
-  it('should read variables from ink', function(){
+  xit('should read variables from ink', function(){
     expect(story.variablesState['stringvar']).toEqual('Emilia');
     expect(story.variablesState['intvar']).toEqual(521);
     expect(story.variablesState['floatvar']).toEqual(52.1);
     expect(story.variablesState['divertvar'].toString()).toEqual('logic.logic_divert_dest');
   });
   
-  it('should write variables to ink', function(){
+  xit('should write variables to ink', function(){
     expect(story.variablesState['stringvar']).toEqual('Emilia');
     story.variablesState['stringvar'] = 'Jonas';
     expect(story.variablesState['stringvar']).toEqual('Jonas');
@@ -82,7 +82,7 @@ describe('Integration', function(){
 //    expect(spy1).toHaveBeenCalledWith('observedVar2', 5);
   });
   
-  it('should increment the read count on each visit', function(){
+  xit('should increment the read count on each visit', function(){
     expect(story.state.VisitCountAtPathString('integration.visit_count')).toEqual(0);
     
     for (let i = 0; i < 10; ++i){
@@ -95,7 +95,7 @@ describe('Integration', function(){
     }
   });
   
-  it('should not increment the read count as long as the knot is not left', function(){
+  xit('should not increment the read count as long as the knot is not left', function(){
     expect(story.state.VisitCountAtPathString('integration.visit_count')).toEqual(0);
     
     for (let i = 0; i < 10; ++i){
@@ -106,21 +106,21 @@ describe('Integration', function(){
     }
   });
   
-  it('should call ink functions', function(){
+  xit('should call ink functions', function(){
     expect(story.EvaluateFunction('fn_with_return')).toEqual('returned');
     expect(story.EvaluateFunction('fn_without_return')).toBeNull();
     expect(story.EvaluateFunction('fn_print')).toBeNull();
     expect(story.EvaluateFunction('fn_calls_other')).toEqual('nested function called');
   });
   
-  it('should call ink functions with params', function(){
+  xit('should call ink functions with params', function(){
     expect(story.EvaluateFunction('fn_params', ['a', 'b'])).toEqual('was a');
     expect(story.EvaluateFunction('fn_echo', ['string'])).toEqual('string');
     expect(story.EvaluateFunction('fn_echo', [5])).toEqual(5);
     expect(story.EvaluateFunction('fn_echo', [5.3])).toEqual(5.3);
   });
   
-  it('should return output and return value from ink function calls', function(){
+  xit('should return output and return value from ink function calls', function(){
     expect(story.EvaluateFunction('fn_print', [], true)).toEqual({
       returned: null,
       output: 'function called\n'
@@ -139,13 +139,14 @@ describe('Integration', function(){
     });
   });
   
-  it('should call external functions', function(){
+  xit('should call external functions', function(){
     story.allowExternalFunctionFallbacks = false;
     story.ChoosePathString('integration.external');
     const externalSpy = jasmine.createSpy('external function spy', function(a, b, c){
       return a;
     }).and.callThrough();
     story.BindExternalFunction('fn_ext', externalSpy);
+    story.BindExternalFunction('gameInc', () => {});
     
     expect(story.ContinueMaximally()).toEqual('1\n1.1\na\na\n');
     expect(externalSpy).toHaveBeenCalledWith(1, 2, 3);
@@ -154,7 +155,28 @@ describe('Integration', function(){
     expect(externalSpy).toHaveBeenCalledWith('a', 1, 2.2);
   });
   
-  it('should return a visit count', function(){
+  it('should handle callastack changes', function(){
+    story.allowExternalFunctionFallbacks = false;
+    const externalSpy = jasmine.createSpy('external function spy', function(x){
+      x++;
+      console.log('in gameInc')
+      x = parseInt(story.EvaluateFunction('inkInc', [x]));
+      console.log('after inkInc')
+      return x;
+    }).and.callThrough();
+    story.BindExternalFunction('fn_ext', () => {});
+    story.BindExternalFunction('gameInc', externalSpy);
+    
+//    expect(story.canContinue).toBe(true);
+//    story.Continue();
+    
+    const result = story.EvaluateFunction('topExternal', [5], true);
+    
+    expect(parseInt(result.returned)).toEqual(7);
+    expect(result.output).toEqual('In top external\n');
+  });
+  
+  xit('should return a visit count', function(){
     expect(story.state.VisitCountAtPathString('game_queries.turnssince')).toEqual(0);
     
     story.ChoosePathString('game_queries.turnssince');
@@ -170,7 +192,7 @@ describe('Integration', function(){
   
   describe('Saving and Loading', function(){
     
-    it('should continue the story', function(){
+    xit('should continue the story', function(){
       story.ChoosePathString('saveload');
       expect(story.Continue()).toEqual('a bit of content\n');
       const save = story.state.ToJson();
@@ -178,7 +200,7 @@ describe('Integration', function(){
       expect(story.Continue()).toEqual('the next bit\n');
     });
     
-    it('should restore a choice point', function(){
+    xit('should restore a choice point', function(){
       story.ChoosePathString('saveload.choicepoint');
       story.Continue();
       expect(story.currentChoices.length).toEqual(2);
@@ -197,7 +219,7 @@ describe('Integration', function(){
   
   describe('debug tools', function(){
     
-    it('should return a string of hierarchy', function(){
+    xit('should return a string of hierarchy', function(){
       expect(story.BuildStringOfHierarchy()).toBeDefined();
     });
     

@@ -257,7 +257,8 @@ export class Story extends InkObject{
 								// Hello world\n			// record state at the end of here
 								// ~ complexCalculation()   // don't actually need this unless it generates text
 								if( stateAtLastNewline == null ) {
-                                	stateAtLastNewline = this.StateSnapshot();
+                  console.log('snapshotting')
+                  stateAtLastNewline = this.StateSnapshot();
 								}	
 						} 
 
@@ -327,6 +328,7 @@ export class Story extends InkObject{
 		return this.state.Copy();
 	}
 	RestoreStateSnapshot(state){
+    console.log('restoring state')
 		this._state = state;
 	}
 	Step(){
@@ -687,6 +689,7 @@ export class Story extends InkObject{
 
 					var errorMsg = "Found " + names[popType] + ", when expected " + expected;
 
+          console.warn('canPop', this.state.callStack.canPop)
 					this.Error(errorMsg);
 				} 
 

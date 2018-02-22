@@ -660,6 +660,9 @@ export class StoryState{
 			this.didSafeExit = true;
 			return true;
 		}
+    
+    console.log('try exit')
+    console.log('in external', this._isExternalFunctionEvaluation)
 
 		return false;
 	}
@@ -682,8 +685,8 @@ export class StoryState{
 		
 		this._variablesState.callStack = this.callStack;
 		
-		// No longer in external function eval
-	        this._isExternalFunctionEvaluation = false; 
+    console.log('unset _isExternalFunctionEvaluation')
+	   this._isExternalFunctionEvaluation = false;
 
 		if (returnedObj) {
 			if (returnedObj instanceof Void)
@@ -751,6 +754,7 @@ export class StoryState{
 
 		copy.previousContentObject = this.previousContentObject;
 		
+    console.log('creating copy of _isExternalFunctionEvaluation')
 		copy._isExternalFunctionEvaluation = this._isExternalFunctionEvaluation;
 		
 		copy._visitCounts = {};

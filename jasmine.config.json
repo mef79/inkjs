@@ -1,4 +1,4 @@
 {
   "spec_dir": "tests/specs",
-  "spec_files": ["**/*[sS]pec.js"]
+  "spec_files": ["**/Integration[sS]pec.js"]
 }
